@@ -25,6 +25,21 @@ def db_session(temp_db):
         yield s
 
 
+@pytest.fixture(autouse=True)
+def _reset_login_rate_limit():
+    # app.security holds a module-global `_attempts` dict for per-IP login
+    # rate limiting. conftest reloads app.db/models/worker/main per test but
+    # NOT app.security (routers bind its functions by reference), so this
+    # global otherwise accumulates login attempts across every test in the
+    # session. Since all tests share the same TestClient IP and the suite runs
+    # well within the 60s window, that leaks the limit and makes unrelated
+    # tests fail with 429->401 once enough tests are added. Clear it per test.
+    import app.security
+    app.security._attempts.clear()
+    yield
+    app.security._attempts.clear()
+
+
 @pytest.fixture()
 def client(temp_db):
     import importlib, app.main

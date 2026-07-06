@@ -1,8 +1,8 @@
 import io, os
 
-def _login_and_import(client):
-    client.post("/api/auth/register", json={"username": "jo", "password": "pw12345"})
-    client.post("/api/auth/login", json={"username": "jo", "password": "pw12345"})
+def _login_and_import(client, username="jo", password="pw12345"):
+    client.post("/api/auth/register", json={"username": username, "password": password})
+    client.post("/api/auth/login", json={"username": username, "password": password})
     fix = os.path.join(os.path.dirname(__file__), "fixtures", "sample_export.xml")
     client.post("/api/imports",
         files={"file": ("export.xml", io.BytesIO(open(fix, "rb").read()), "text/xml")})
@@ -25,3 +25,20 @@ def test_summary_and_series_and_records(client):
 
 def test_dashboard_requires_auth(client):
     assert client.get("/api/dashboard/summary").status_code == 401
+
+def test_unknown_range_returns_400(client):
+    _login_and_import(client)
+    assert client.get("/api/dashboard/metrics/steps?range=bogus").status_code == 400
+
+def test_dashboard_is_private_per_user(client):
+    # User A imports data, then logs out.
+    _login_and_import(client, username="alice", password="pw12345")
+    client.post("/api/auth/logout")
+
+    # User B registers and logs in fresh — must see none of A's data.
+    client.post("/api/auth/register", json={"username": "bob", "password": "pw12345"})
+    client.post("/api/auth/login", json={"username": "bob", "password": "pw12345"})
+
+    assert client.get("/api/dashboard/summary").json()["metrics"] == []
+    assert client.get("/api/dashboard/metrics/steps?range=all").json()["points"] == []
+    assert client.get("/api/dashboard/records").json()["highlights"] == []
