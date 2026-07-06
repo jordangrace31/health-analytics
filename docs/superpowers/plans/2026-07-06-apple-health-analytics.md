@@ -16,7 +16,7 @@
 - Passwords hashed with **argon2** (`passlib`). Sessions via **signed, httpOnly, SameSite cookies**.
 - XML parsing must be **streaming** (`lxml.iterparse` with element clearing) — must not load the whole file into memory.
 - Re-import is a **full-snapshot replace**: a successful import atomically becomes the user's only dataset; on failure, prior data is untouched.
-- Timestamps from Apple exports are stored as local wall-clock ISO strings `YYYY-MM-DD HH:MM:SS` (first 19 chars of the export value) so SQLite `date()`/`julianday()` work directly.
+- Timestamps **from Apple exports** (`HealthRecord`/`Workout` `start_time`/`end_time`) are stored as local wall-clock ISO strings `YYYY-MM-DD HH:MM:SS` (first 19 chars of the export value) so SQLite `date()`/`julianday()` work directly. App-managed record timestamps (`User.created_at`, `Import.created_at`/`completed_at`) are native `DateTime` — they are serialized via `.isoformat()` and are not fed to `date()`/`julianday()`.
 - TDD throughout: write the failing test, see it fail, implement, see it pass, commit.
 
 **Metric aggregation map** (used by aggregation + dashboard):
