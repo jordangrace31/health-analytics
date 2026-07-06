@@ -1301,6 +1301,21 @@ git commit -m "Add dashboard API: summary, series, and records"
 
 ---
 
+### Task 9b: Wire up export_date (backend)
+
+Added per user decision after Phase 3: populate `Import.export_date` (previously defined but unused).
+
+**Files:**
+- Modify: `backend/app/parser.py` (extract `<ExportDate>`), `backend/app/worker.py` (capture + store it), `backend/app/routers/imports.py` (surface in `_serialize`)
+- Test: extend `test_parser.py`, `test_worker.py`, `test_imports.py`
+
+**Interfaces:**
+- `iter_elements` additionally yields `("export_date", {"value": <first-19-chars or None>})` for the single `<ExportDate value=...>` element.
+- Worker captures the first `export_date` value and sets `imp.export_date` in the completion block.
+- Imports API `_serialize` adds `"export_date": imp.export_date`.
+
+Frontend display of "last exported" is handled in the Import page task (Phase 4).
+
 ## Phase 4 — Frontend
 
 ### Task 10: Frontend scaffold
