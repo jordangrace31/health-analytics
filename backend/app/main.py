@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 from app.config import get_settings
 from app.db import init_db
-from app.routers import auth
+from app.routers import auth, imports
 
 settings = get_settings()
 app = FastAPI(title="Health Analytics")
@@ -22,3 +22,4 @@ def health():
     return {"status": "ok"}
 
 app.include_router(auth.router)
+app.include_router(imports.router)
