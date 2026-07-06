@@ -26,14 +26,20 @@ async def create_import(bg: BackgroundTasks, file: UploadFile = File(...),
     max_bytes = get_settings().max_upload_mb * 1024 * 1024
     suffix = ".zip" if name.endswith(".zip") else ".xml"
     fd, tmp_path = tempfile.mkstemp(suffix=suffix)
-    size = 0
-    with os.fdopen(fd, "wb") as out:
-        while chunk := await file.read(1024 * 1024):
-            size += len(chunk)
-            if size > max_bytes:
-                out.close(); os.remove(tmp_path)
-                raise HTTPException(status_code=413, detail="File too large")
-            out.write(chunk)
+    try:
+        size = 0
+        with os.fdopen(fd, "wb") as out:
+            while chunk := await file.read(1024 * 1024):
+                size += len(chunk)
+                if size > max_bytes:
+                    raise HTTPException(status_code=413, detail="File too large")
+                out.write(chunk)
+    except BaseException:
+        # Clean up the partial temp file on ANY read/write error (size
+        # overflow, client disconnect, disk error, etc.) before propagating.
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+        raise
     imp = Import(user_id=user.id, filename=file.filename or "export", status="pending")
     db.add(imp); db.commit(); db.refresh(imp)
     bg.add_task(run_import, imp.id, tmp_path)
