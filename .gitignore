@@ -16,6 +16,8 @@ backend/data/
 
 # Node
 node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
 
 # Editors / OS
 .DS_Store
