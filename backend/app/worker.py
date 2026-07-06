@@ -18,6 +18,7 @@ def run_import(import_id: int, file_path: str) -> None:
         record_batch: list[dict] = []
         workout_batch: list[dict] = []
         count = 0
+        export_date = None
 
         def flush_records():
             if record_batch:
@@ -37,10 +38,13 @@ def run_import(import_id: int, file_path: str) -> None:
                     count += 1
                     if len(record_batch) >= BATCH:
                         flush_records()
-                else:
+                elif kind == "workout":
                     workout_batch.append(d)
                     if len(workout_batch) >= BATCH:
                         flush_workouts()
+                elif kind == "export_date":
+                    if export_date is None:
+                        export_date = d["value"]
         flush_records()
         flush_workouts()
 
@@ -56,6 +60,7 @@ def run_import(import_id: int, file_path: str) -> None:
             Import.status == "complete").update({"status": "superseded"})
 
         imp.record_count = count
+        imp.export_date = export_date
         imp.status = "complete"
         imp.completed_at = datetime.now(timezone.utc)
         db.commit()

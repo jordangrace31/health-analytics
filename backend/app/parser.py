@@ -32,9 +32,11 @@ def _minutes_to_seconds(v: str | None, unit: str | None) -> float | None:
     return n * 60.0 if (unit or "min").startswith("min") else n
 
 def iter_elements(fileobj: BinaryIO) -> Iterator[tuple[str, dict]]:
-    context = etree.iterparse(fileobj, events=("end",), tag=("Record", "Workout"))
+    context = etree.iterparse(fileobj, events=("end",), tag=("Record", "Workout", "ExportDate"))
     for _, el in context:
-        if el.tag == "Record":
+        if el.tag == "ExportDate":
+            yield ("export_date", {"value": norm_ts(el.get("value"))})
+        elif el.tag == "Record":
             v = el.get("value")
             yield ("record", {
                 "type": el.get("type"),

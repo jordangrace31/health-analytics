@@ -24,3 +24,15 @@ def test_iter_elements_records_and_workout():
     assert workouts[0]["activity_type"] == "HKWorkoutActivityTypeRunning"
     assert workouts[0]["duration_sec"] == 1800.0
     assert workouts[0]["energy_kcal"] == 250.0
+
+def test_iter_elements_export_date():
+    with open_export(FIX) as fh:
+        items = list(iter_elements(fh))
+    export_dates = [d for kind, d in items if kind == "export_date"]
+    records = [d for kind, d in items if kind == "record"]
+    workouts = [d for kind, d in items if kind == "workout"]
+    assert len(export_dates) == 1
+    assert export_dates[0]["value"] == "2026-07-01 09:00:00"
+    # adding ExportDate must not change record/workout counts
+    assert len(records) == 7
+    assert len(workouts) == 1

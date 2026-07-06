@@ -13,6 +13,7 @@ def _serialize(imp: Import) -> dict:
     return {
         "id": imp.id, "filename": imp.filename, "status": imp.status,
         "error_message": imp.error_message, "record_count": imp.record_count,
+        "export_date": imp.export_date,
         "created_at": imp.created_at.isoformat() if imp.created_at else None,
         "completed_at": imp.completed_at.isoformat() if imp.completed_at else None,
     }

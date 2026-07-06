@@ -15,6 +15,7 @@ def test_upload_processes_synchronously_in_tests(client):
     status = client.get(f"/api/imports/{iid}").json()
     assert status["status"] == "complete"
     assert status["record_count"] == 7
+    assert status["export_date"] == "2026-07-01 09:00:00"
 
 def test_cannot_read_others_import(client):
     _login(client)

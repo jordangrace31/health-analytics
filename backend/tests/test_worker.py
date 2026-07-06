@@ -33,6 +33,7 @@ def test_run_import_success(temp_db):
         imp = db.get(Import, iid)
         assert imp.status == "complete"
         assert imp.record_count == 7
+        assert imp.export_date == "2026-07-01 09:00:00"
         assert db.query(Workout).count() == 1
         steps = db.query(DailySummary).filter_by(metric_key="steps", day="2026-06-01").one()
         assert steps.value == 1200
