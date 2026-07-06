@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timezone
 from app.db import SessionLocal
-from app.models import Import, HealthRecord, Workout, DailySummary
+from app.models import Import, HealthRecord, Workout
 from app.parser import open_export, iter_elements
 from app.aggregation import compute_daily_summaries
 
@@ -43,7 +43,6 @@ def run_import(import_id: int, file_path: str) -> None:
                         flush_workouts()
         flush_records()
         flush_workouts()
-        db.commit()
 
         compute_daily_summaries(db, user_id, import_id)
 
