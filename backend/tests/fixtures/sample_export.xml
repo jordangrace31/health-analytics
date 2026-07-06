@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HealthData locale="en_US">
+ <ExportDate value="2026-07-01 09:00:00 -0700"/>
+ <Record type="HKQuantityTypeIdentifierStepCount" sourceName="Watch" unit="count" startDate="2026-06-01 08:00:00 -0700" endDate="2026-06-01 08:10:00 -0700" value="500"/>
+ <Record type="HKQuantityTypeIdentifierStepCount" sourceName="Watch" unit="count" startDate="2026-06-01 09:00:00 -0700" endDate="2026-06-01 09:10:00 -0700" value="700"/>
+ <Record type="HKQuantityTypeIdentifierRestingHeartRate" sourceName="Watch" unit="count/min" startDate="2026-06-01 07:00:00 -0700" endDate="2026-06-01 07:00:00 -0700" value="60"/>
+ <Record type="HKQuantityTypeIdentifierRestingHeartRate" sourceName="Watch" unit="count/min" startDate="2026-06-01 20:00:00 -0700" endDate="2026-06-01 20:00:00 -0700" value="70"/>
+ <Record type="HKCategoryTypeIdentifierSleepAnalysis" sourceName="Watch" startDate="2026-06-01 23:00:00 -0700" endDate="2026-06-02 06:00:00 -0700" value="HKCategoryValueSleepAnalysisAsleepCore"/>
+ <Record type="HKCategoryTypeIdentifierSleepAnalysis" sourceName="Watch" startDate="2026-06-01 22:30:00 -0700" endDate="2026-06-01 23:00:00 -0700" value="HKCategoryValueSleepAnalysisInBed"/>
+ <Record type="HKQuantityTypeIdentifierStepCount" sourceName="Watch" unit="count" startDate="bad-date" endDate="" value="not-a-number"/>
+ <Workout workoutActivityType="HKWorkoutActivityTypeRunning" duration="30" durationUnit="min" totalEnergyBurned="250" totalEnergyBurnedUnit="kcal" totalDistance="5" totalDistanceUnit="km" startDate="2026-06-01 18:00:00 -0700" endDate="2026-06-01 18:30:00 -0700"/>
+</HealthData>
